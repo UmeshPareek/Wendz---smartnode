@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: smartnode
+    env: python
+    buildCommand: pip install -r sensor-service/requirements.txt
+    startCommand: cd sensor-service && python app.py
+    envVars:
+      - key: PORT
+        value: 5000

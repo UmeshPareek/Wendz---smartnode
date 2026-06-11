@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNode Control</title>
+<style>
+  :root {
+    --navy: #09111A;
+    --gold: #C49A4A;
+    --cream: #F0EAE0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--navy);
+    color: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wrap { text-align: center; padding: 40px; }
+  h1 {
+    font-family: Georgia, 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  p.sub { color: #8a93a3; margin-bottom: 40px; font-size: 0.95rem; }
+  .links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  a.card {
+    display: block;
+    padding: 28px 40px;
+    border: 1px solid rgba(196,154,74,0.3);
+    border-radius: 12px;
+    color: var(--cream);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    min-width: 200px;
+  }
+  a.card:hover {
+    border-color: var(--gold);
+    background: rgba(196,154,74,0.08);
+    transform: translateY(-2px);
+  }
+  a.card .icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+  a.card .label { font-weight: 600; font-size: 1.1rem; }
+  a.card .desc { font-size: 0.85rem; color: #8a93a3; margin-top: 6px; }
+  .footer { margin-top: 50px; font-size: 0.8rem; color: #5a6373; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>SmartNode</h1>
+  <p class="sub">Wendz LLP — Smart Vending Node Control Panel</p>
+  <div class="links">
+    <a class="card" href="/player">
+      <span class="icon">📺</span>
+      <span class="label">Ad Player</span>
+      <span class="desc">Fullscreen display loop</span>
+    </a>
+    <a class="card" href="/dashboard">
+      <span class="icon">📊</span>
+      <span class="label">Sensor Dashboard</span>
+      <span class="desc">Live sensor readings</span>
+    </a>
+    <a class="card" href="/api/sensors">
+      <span class="icon">🔌</span>
+      <span class="label">API</span>
+      <span class="desc">Raw JSON feed</span>
+    </a>
+  </div>
+  <div class="footer">Pi 4 · Flask · WebSocket — Phase 1 Build</div>
+</div>
+</body>
+</html>

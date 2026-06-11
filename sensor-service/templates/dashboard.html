@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNode — Dashboard</title>
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<style>
+  :root {
+    --navy: #09111A;
+    --navy-light: #131D2C;
+    --gold: #C49A4A;
+    --cream: #F0EAE0;
+    --green: #4CAF7D;
+    --red: #E2574C;
+    --grey: #5a6373;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+  body {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 24px;
+    min-height: 100vh;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+  }
+  h1 {
+    font-family: Georgia, 'EB Garamond', serif;
+    font-style: italic;
+    color: var(--gold);
+    font-size: 1.8rem;
+  }
+  .mode-badge {
+    padding: 6px 14px; border-radius: 20px; font-size: 0.8rem;
+    border: 1px solid var(--gold); color: var(--gold);
+  }
+  .mode-badge.live { border-color: var(--green); color: var(--green); }
+
+  .category {
+    margin-bottom: 28px;
+  }
+  .category h2 {
+    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--grey); margin-bottom: 12px; font-weight: 600;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--navy-light);
+    border: 1px solid rgba(196,154,74,0.15);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.3s ease;
+  }
+  .card.alert { border-color: var(--red); }
+  .card .name { font-size: 0.9rem; color: var(--cream); margin-bottom: 4px; }
+  .card .model { font-size: 0.7rem; color: var(--grey); margin-bottom: 12px; }
+  .card .value {
+    font-size: 1.6rem; font-weight: 600; color: var(--gold);
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .card .value .unit { font-size: 0.85rem; font-weight: 400; color: var(--grey); }
+  .card .value.alert-value { color: var(--red); }
+  .card .updated {
+    font-size: 0.7rem; color: var(--grey); margin-top: 10px;
+    display: flex; justify-content: space-between;
+  }
+  .dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); margin-right: 4px;
+  }
+  .dot.sim { background: var(--gold); }
+
+  .stat-bar {
+    display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .stat-bar .stat {
+    background: var(--navy-light); border-radius: 10px; padding: 16px 24px;
+    flex: 1; min-width: 150px;
+    border: 1px solid rgba(196,154,74,0.15);
+  }
+  .stat-bar .stat .label { font-size: 0.75rem; color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-bar .stat .num { font-size: 2rem; font-weight: 700; color: var(--gold); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SmartNode Dashboard</h1>
+  <div class="mode-badge {{ 'live' if mode.startswith('LIVE') }}" id="mode-badge">{{ mode }}</div>
+</header>
+
+<div class="stat-bar">
+  <div class="stat">
+    <div class="label">Footfall (today)</div>
+    <div class="num" id="stat-footfall">—</div>
+  </div>
+  <div class="stat">
+    <div class="label">BLE Devices</div>
+    <div class="num" id="stat-ble">—</div>
+  </div>
+  <div class="stat">
+    <div class="label">Power Draw</div>
+    <div class="num" id="stat-power">—</div>
+  </div>
+  <div class="stat">
+    <div class="label">Enclosure Temp</div>
+    <div class="num" id="stat-temp">—</div>
+  </div>
+</div>
+
+{% set categories = {
+  'security': '🔒 Security',
+  'analytics': '📈 Analytics',
+  'operations': '⚙️ Operations',
+  'infrastructure': '🛠 Infrastructure'
+} %}
+
+{% for cat_key, cat_label in categories.items() %}
+<div class="category">
+  <h2>{{ cat_label }}</h2>
+  <div class="grid">
+    {% for s in sensors if s.category == cat_key %}
+    <div class="card" id="card-{{ s.id }}">
+      <div class="name">{{ s.name }}</div>
+      <div class="model">{{ s.model }} · {{ s.interface }}</div>
+      <div class="value" id="value-{{ s.id }}">
+        <span class="num">—</span>
+        <span class="unit">{{ s.unit }}</span>
+      </div>
+      <div class="updated">
+        <span><span class="dot {{ '' if mode.startswith('LIVE') else 'sim' }}"></span><span id="status-{{ s.id }}">—</span></span>
+        <span id="time-{{ s.id }}">—</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+
+<script>
+  const socket = io();
+
+  // Sensors that should turn the card red when "triggered"/"open"/"pressed"
+  const ALERT_VALUES = new Set(['triggered', 'open', 'pressed']);
+
+  socket.on('sensor_update', (data) => {
+    for (const [id, info] of Object.entries(data)) {
+      const valueEl = document.querySelector(`#value-${id} .num`);
+      const statusEl = document.getElementById(`status-${id}`);
+      const timeEl = document.getElementById(`time-${id}`);
+      const cardEl = document.getElementById(`card-${id}`);
+      if (!valueEl) continue;
+
+      valueEl.textContent = info.value !== null ? info.value : '—';
+      statusEl.textContent = info.status;
+      timeEl.textContent = info.last_update || '—';
+
+      const isAlert = ALERT_VALUES.has(String(info.value));
+      cardEl.classList.toggle('alert', isAlert);
+      valueEl.classList.toggle('alert-value', isAlert);
+    }
+
+    // Update top stat bar
+    if (data.ir_counter) document.getElementById('stat-footfall').textContent = data.ir_counter.value ?? '—';
+    if (data.ble_scan) document.getElementById('stat-ble').textContent = data.ble_scan.value ?? '—';
+    if (data.power) document.getElementById('stat-power').textContent = (data.power.value ?? '—') + ' W';
+    if (data.temp) document.getElementById('stat-temp').textContent = (data.temp.value ?? '—') + ' °C';
+  });
+
+  socket.on('connect', () => console.log('Connected to SmartNode live feed'));
+</script>
+
+</body>
+</html>

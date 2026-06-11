@@ -1,0 +1,4 @@
+flask
+flask-socketio
+# On the Pi, also install:
+# RPi.GPIO
