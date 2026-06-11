@@ -1,4 +1,4 @@
 flask
 flask-socketio
-# On the Pi, also install:
-# RPi.GPIO
+eventlet
+# On the Pi, also install: RPi.GPIO

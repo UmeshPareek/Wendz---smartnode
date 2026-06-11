@@ -35,7 +35,7 @@ ADS_DIR = os.path.join(BASE_DIR, "..", "ad-player", "ads")
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["SECRET_KEY"] = "smartnode-dev"
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # ----------------------------------------------------------------------
 # SENSOR DEFINITIONS
