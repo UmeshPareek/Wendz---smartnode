@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartNode — Display</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<title>WENDZ SmartNode</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   html, body {
     width: 100%; height: 100%;
-    background: #000;
+    background: #0D0F14;
     overflow: hidden;
     cursor: none;
     -webkit-font-smoothing: antialiased;
@@ -21,298 +21,286 @@
     position: absolute;
     inset: 0;
     opacity: 0;
-    transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
   }
   .slide.active { opacity: 1; z-index: 1; }
 
-  .slide img, .slide video {
+  .slide img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    animation: kenBurns 12s ease-in-out forwards;
+  }
+  @keyframes kenBurns {
+    from { transform: scale(1.0); }
+    to   { transform: scale(1.05); }
+  }
+
+  .slide video {
     width: 100%; height: 100%;
     object-fit: cover;
   }
 
-  /* Ken Burns zoom on images */
-  .slide.active img {
-    animation: kenBurns 10s ease-in-out forwards;
-  }
-  @keyframes kenBurns {
-    from { transform: scale(1.0); }
-    to   { transform: scale(1.06); }
-  }
-
-  /* ── PLACEHOLDER (no ads) ── */
+  /* ── PLACEHOLDER ── */
   .placeholder {
     position: absolute;
     inset: 0;
+    background: #0D0F14;
+    display: flex;
+  }
+
+  /* Left panel */
+  .ph-left {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #050A10;
-    overflow: hidden;
-  }
-
-  .placeholder::before {
-    content: '';
-    position: absolute;
-    top: -30%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70vw;
-    height: 70vh;
-    background: radial-gradient(ellipse, rgba(201,161,76,0.07) 0%, transparent 65%);
-    animation: breathe 6s ease-in-out infinite;
-  }
-  @keyframes breathe {
-    0%,100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-    50%     { opacity: 1;   transform: translateX(-50%) scale(1.08); }
-  }
-
-  .placeholder::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-    background-size: 80px 80px;
-  }
-
-  .placeholder-inner {
+    justify-content: space-between;
+    padding: 9vh 8vw;
     position: relative;
     z-index: 1;
-    text-align: center;
-    padding: 60px;
   }
 
-  .ph-logo {
-    width: 72px; height: 72px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #C9A14C, #7D5C20);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 32px;
-    margin: 0 auto 32px;
-    box-shadow: 0 0 60px rgba(201,161,76,0.3);
+  .ph-wordmark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    letter-spacing: 0.12em;
+    color: #FFFFFF;
   }
 
-  .ph-title {
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 300;
-    letter-spacing: 0.25em;
+  .ph-main { }
+
+  .ph-accent {
+    width: clamp(36px, 5vw, 60px);
+    height: 3px;
+    background: #3B52D4;
+    margin-bottom: clamp(16px, 2.5vh, 28px);
+  }
+
+  .ph-tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.8rem, 7vw, 8rem);
+    line-height: 0.92;
+    letter-spacing: 0.01em;
     text-transform: uppercase;
-    color: #C9A14C;
-    margin-bottom: 12px;
+    color: #FFFFFF;
   }
+  .ph-tagline .blue { color: #3B52D4; }
 
   .ph-sub {
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(0.8rem, 1.5vw, 1rem);
-    color: rgba(255,255,255,0.25);
-    letter-spacing: 0.15em;
+    margin-top: clamp(14px, 2vh, 24px);
+    font-size: clamp(0.65rem, 1vw, 0.8rem);
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    margin-bottom: 48px;
-  }
-
-  .ph-hint {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 24px;
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 40px;
-    font-size: 0.78rem;
     color: rgba(255,255,255,0.3);
-    letter-spacing: 0.06em;
-    font-family: 'Inter', sans-serif;
-  }
-  .ph-hint code {
-    font-family: monospace;
-    color: rgba(201,161,76,0.7);
-    background: rgba(201,161,76,0.06);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
+    font-weight: 500;
   }
 
-  /* ── HUD OVERLAY ── */
+  .ph-footer {
+    font-size: clamp(0.6rem, 0.9vw, 0.72rem);
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Right panel — giant W */
+  .ph-right {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+    position: relative;
+  }
+  .ph-big-w {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(300px, 58vw, 900px);
+    line-height: 0.85;
+    color: #3B52D4;
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.04em;
+    margin-right: -8vw;
+    flex-shrink: 0;
+  }
+
+  /* ── HUD ── */
   .hud {
     position: fixed;
     z-index: 100;
     pointer-events: none;
   }
 
-  /* Top-left: branding */
-  .hud-brand {
+  /* Top-left brand */
+  .hud-tl {
     top: 0; left: 0;
-    padding: 22px 28px;
+    padding: clamp(16px, 3vh, 28px) clamp(20px, 4vw, 40px);
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: linear-gradient(to right, rgba(0,0,0,0.55), transparent);
-    padding-right: 80px;
+    gap: 16px;
+    background: linear-gradient(to right, rgba(13,15,20,0.8) 0%, transparent 100%);
+    padding-right: 10vw;
   }
-  .hud-logo {
-    width: 26px; height: 26px;
-    border-radius: 6px;
-    background: linear-gradient(135deg, #C9A14C, #7D5C20);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px;
-  }
-  .hud-name {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
+
+  .hud-wordmark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(0.9rem, 1.8vw, 1.3rem);
     letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .hud-sep {
+    width: 1px; height: 14px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .hud-sub {
+    font-size: clamp(0.55rem, 0.9vw, 0.7rem);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.3);
+    font-weight: 500;
   }
-  .hud-name span { color: rgba(201,161,76,0.8); }
 
-  /* Bottom-right: clock + status */
-  .hud-status {
+  /* Bottom-right status */
+  .hud-br {
     bottom: 0; right: 0;
-    padding: 16px 22px;
+    padding: clamp(14px, 2.5vh, 24px) clamp(20px, 4vw, 36px);
     display: flex;
     align-items: center;
-    gap: 14px;
-    background: linear-gradient(to left, rgba(0,0,0,0.55), transparent);
-    padding-left: 80px;
+    gap: 16px;
+    background: linear-gradient(to left, rgba(13,15,20,0.8) 0%, transparent 100%);
+    padding-left: 10vw;
   }
 
-  .live-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(34,197,94,0.25);
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+  .live-tag {
+    display: flex; align-items: center; gap: 6px;
+    font-size: clamp(0.55rem, 0.8vw, 0.65rem);
+    font-weight: 700;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: rgba(34,197,94,0.7);
-    font-family: 'Inter', sans-serif;
   }
   .live-dot {
-    width: 5px; height: 5px;
-    border-radius: 50%;
+    width: 5px; height: 5px; border-radius: 50%;
     background: #22C55E;
-    box-shadow: 0 0 6px #22C55E;
-    animation: blink 2s ease-in-out infinite;
+    box-shadow: 0 0 8px #22C55E;
+    animation: blink 2s infinite;
   }
-  @keyframes blink {
-    0%,100%{ opacity:1; } 50%{ opacity:0.3; }
-  }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
-  .clock {
+  .hud-clock {
     font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 300;
+    font-size: clamp(0.65rem, 1vw, 0.8rem);
+    font-weight: 400;
     letter-spacing: 0.1em;
-    color: rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.25);
   }
 
   /* Progress bar */
-  .progress-bar {
+  .progress {
     position: fixed;
     bottom: 0; left: 0;
     height: 2px;
-    background: linear-gradient(90deg, #C9A14C, rgba(201,161,76,0.3));
+    background: #3B52D4;
     z-index: 101;
     width: 0%;
     transition: width linear;
   }
 
-  /* Slide counter dots */
+  /* Slide dots */
   .slide-dots {
     position: fixed;
-    bottom: 28px;
+    bottom: clamp(18px, 3vh, 32px);
     left: 50%;
     transform: translateX(-50%);
-    z-index: 101;
+    z-index: 102;
     display: flex;
     gap: 6px;
     pointer-events: none;
   }
   .sdot {
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    transition: all 0.3s;
+    height: 3px; width: 20px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.15);
+    transition: all 0.3s ease;
   }
   .sdot.active {
-    background: rgba(201,161,76,0.8);
-    width: 20px;
-    border-radius: 2px;
+    background: #3B52D4;
+    width: 36px;
   }
 </style>
 </head>
 <body>
 
 {% if ads|length == 0 %}
-  <div class="placeholder">
-    <div class="placeholder-inner">
-      <div class="ph-logo">⚡</div>
-      <div class="ph-title">WENDZ</div>
-      <div class="ph-sub">SmartNode · Display Ready</div>
-      <div class="ph-hint">
-        Drop files into <code>ad-player/ads/</code> to begin
-      </div>
+<div class="placeholder">
+  <div class="ph-left">
+    <div class="ph-wordmark">WENDZ</div>
+    <div class="ph-main">
+      <div class="ph-accent"></div>
+      <div class="ph-tagline">Not Another<br><span class="blue">Boring</span><br>Screen</div>
+      <div class="ph-sub">SmartNode &nbsp;·&nbsp; Bengaluru, IN</div>
     </div>
+    <div class="ph-footer">Drop content into ad-player/ads/ to begin</div>
   </div>
+  <div class="ph-right">
+    <div class="ph-big-w">W</div>
+  </div>
+</div>
 {% else %}
   {% for ad in ads %}
   <div class="slide {{ 'active' if loop.first }}" id="slide-{{ loop.index0 }}">
-    {% if ad.lower().endswith(('.mp4', '.webm')) %}
-      <video src="/ads/{{ ad }}" autoplay muted playsinline></video>
+    {% if ad.lower().endswith(('.mp4','.webm')) %}
+      <video src="/ads/{{ ad }}" autoplay muted playsinline loop></video>
     {% else %}
       <img src="/ads/{{ ad }}" alt="" draggable="false">
     {% endif %}
   </div>
   {% endfor %}
 
-  <!-- Slide indicator dots -->
   {% if ads|length > 1 %}
-  <div class="slide-dots" id="dots">
+  <div class="slide-dots">
     {% for ad in ads %}
-    <div class="sdot {{ 'active' if loop.first }}" id="dot-{{ loop.index0 }}"></div>
+    <div class="sdot {{ 'active' if loop.first }}" id="sdot-{{ loop.index0 }}"></div>
     {% endfor %}
   </div>
   {% endif %}
 {% endif %}
 
-<!-- HUD overlays -->
-<div class="hud hud-brand">
-  <div class="hud-logo">⚡</div>
-  <div class="hud-name">WENDZ <span>SmartNode</span></div>
+<!-- HUD -->
+<div class="hud hud-tl">
+  <div class="hud-wordmark">WENDZ</div>
+  <div class="hud-sep"></div>
+  <div class="hud-sub">SmartNode Display</div>
 </div>
 
-<div class="hud hud-status">
-  <div class="live-pill"><span class="live-dot"></span> Live</div>
-  <div class="clock" id="clock">--:--</div>
+<div class="hud hud-br">
+  <div class="live-tag"><span class="live-dot"></span>Live</div>
+  <div class="hud-clock" id="clock">--:--</div>
 </div>
 
-<div class="progress-bar" id="progress"></div>
+<div class="progress" id="progress"></div>
 
 <script>
   const SLIDE_MS = 8000;
-  const slides = document.querySelectorAll('.slide');
-  let current = 0;
+  const slides   = document.querySelectorAll('.slide');
+  let current    = 0;
 
   function goTo(idx) {
     if (slides.length < 2) return;
-    const prev = current;
-    current = idx % slides.length;
-    slides[prev].classList.remove('active');
+    slides[current].classList.remove('active');
+    current = ((idx % slides.length) + slides.length) % slides.length;
     slides[current].classList.add('active');
 
-    // Update dots
-    document.querySelectorAll('.sdot').forEach((d, i) => {
-      d.classList.toggle('active', i === current);
-    });
+    document.querySelectorAll('.sdot').forEach((d, i) =>
+      d.classList.toggle('active', i === current)
+    );
 
-    // Progress bar
     const bar = document.getElementById('progress');
     bar.style.transition = 'none';
     bar.style.width = '0%';
@@ -322,18 +310,13 @@
     });
   }
 
-  if (slides.length > 1) {
-    goTo(0);
-    setInterval(() => goTo(current + 1), SLIDE_MS);
-  }
+  if (slides.length > 1) { goTo(0); setInterval(() => goTo(current + 1), SLIDE_MS); }
 
-  // Clock
   function tick() {
     document.getElementById('clock').textContent =
       new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   }
   setInterval(tick, 1000); tick();
 </script>
-
 </body>
 </html>

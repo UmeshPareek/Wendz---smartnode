@@ -3,240 +3,209 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartNode — Wendz LLP</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>SmartNode — Wendz</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg: #050A10;
-    --surface: #0C1520;
-    --surface2: #111D2E;
-    --border: rgba(255,255,255,0.06);
-    --border-hover: rgba(196,154,74,0.4);
-    --gold: #C9A14C;
-    --gold-dim: rgba(201,161,76,0.12);
-    --text: #DDE6F0;
-    --muted: #4A6070;
-    --sub: #7A90A4;
-    --blue: #3B82F6;
+    --blue: #3B52D4;
+    --dark: #0D0F14;
+    --dark2: #13161D;
+    --border: rgba(255,255,255,0.07);
+    --text: #FFFFFF;
+    --sub: rgba(255,255,255,0.35);
+    --dim: rgba(255,255,255,0.12);
   }
 
   html, body {
     height: 100%;
-    background: var(--bg);
+    background: var(--dark);
     color: var(--text);
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     overflow: hidden;
   }
 
-  /* Radial spotlight */
-  body::before {
-    content: '';
-    position: fixed;
-    top: -20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80vw;
-    height: 60vh;
-    background: radial-gradient(ellipse at center, rgba(201,161,76,0.06) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  /* Grid overlay */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-  }
-
   .page {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 24px;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
   }
 
-  /* Wordmark */
-  .wordmark {
+  /* TOP BAR */
+  .topbar {
+    padding: 28px 40px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 8px;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
   }
-  .logo-icon {
-    width: 44px; height: 44px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #C9A14C, #8B6B30);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 0 30px rgba(201,161,76,0.25);
-  }
-  .wordmark h1 {
-    font-size: 2.2rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
+  .wordmark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: 0.08em;
     color: var(--text);
   }
-  .wordmark h1 span { color: var(--gold); }
-
-  .tagline {
-    font-size: 0.9rem;
-    color: var(--muted);
-    letter-spacing: 0.12em;
+  .topbar-right {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    margin-bottom: 56px;
+    color: var(--sub);
     font-weight: 500;
   }
 
-  /* Divider line */
-  .divider {
-    width: 1px;
-    height: 48px;
-    background: linear-gradient(to bottom, transparent, var(--border), transparent);
-    margin: 0 auto 56px;
-  }
-
-  /* Nav cards */
-  .nav {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 700px;
-  }
-
-  .nav-card {
+  /* HERO */
+  .hero {
     position: relative;
-    flex: 1;
-    min-width: 190px;
-    max-width: 210px;
-    text-decoration: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px 24px;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
     overflow: hidden;
-    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
-    group: '';
   }
 
-  .nav-card::before {
-    content: '';
+  /* Giant W */
+  .bg-letter {
     position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(201,161,76,0.07), transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s;
+    right: -4vw;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(240px, 38vw, 520px);
+    line-height: 0.85;
+    color: var(--blue);
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.04em;
   }
 
-  .nav-card:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,161,76,0.12);
-  }
-  .nav-card:hover::before { opacity: 1; }
+  .hero-content { position: relative; z-index: 1; max-width: 480px; }
 
-  .card-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+  .accent-line {
+    width: 52px; height: 3px;
+    background: var(--blue);
     margin-bottom: 18px;
   }
-  .icon-player { background: rgba(59,130,246,0.12); }
-  .icon-dash   { background: rgba(201,161,76,0.12); }
-  .icon-api    { background: rgba(255,255,255,0.05); }
 
-  .card-label {
-    font-size: 1rem;
-    font-weight: 600;
+  .tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.8rem, 5.5vw, 4.8rem);
+    letter-spacing: 0.01em;
+    line-height: 0.95;
     color: var(--text);
-    margin-bottom: 6px;
-    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
   }
-  .card-desc {
-    font-size: 0.8rem;
+  .tagline .blue { color: var(--blue); }
+
+  .sub-line {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     color: var(--sub);
-    line-height: 1.5;
+    font-weight: 500;
   }
 
-  .card-arrow {
-    position: absolute;
-    top: 24px; right: 20px;
-    color: var(--muted);
-    font-size: 14px;
-    transition: color 0.2s, transform 0.2s;
+  /* NAV GRID */
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border);
   }
-  .nav-card:hover .card-arrow { color: var(--gold); transform: translate(2px, -2px); }
 
-  /* Status pill */
-  .status-row {
+  .nav-item {
+    text-decoration: none;
+    padding: 28px 40px;
+    border-right: 1px solid var(--border);
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 52px;
-    font-size: 0.78rem;
-    color: var(--muted);
+    flex-direction: column;
+    gap: 6px;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
   }
-  .pulse {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #22C55E;
-    box-shadow: 0 0 8px #22C55E;
-    animation: pulse 2s ease-in-out infinite;
+  .nav-item:last-child { border-right: none; }
+  .nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--blue);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
+  .nav-item:hover { background: rgba(59,82,212,0.06); }
+  .nav-item:hover::before { transform: scaleX(1); }
+
+  .nav-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .nav-desc {
+    font-size: 0.72rem;
+    color: var(--sub);
+    letter-spacing: 0.05em;
+    font-weight: 400;
+  }
+  .nav-arrow {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: var(--blue);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 640px) {
+    .nav-grid { grid-template-columns: 1fr; }
+    .nav-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .bg-letter { font-size: 50vw; }
+    .topbar, .hero, .nav-item { padding-left: 24px; padding-right: 24px; }
   }
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="wordmark">
-    <div class="logo-icon">⚡</div>
-    <h1>Smart<span>Node</span></h1>
+
+  <div class="topbar">
+    <div class="wordmark">WENDZ</div>
+    <div class="topbar-right">Smart Vending Node &nbsp;/&nbsp; Control Panel</div>
   </div>
-  <p class="tagline">Wendz LLP &nbsp;·&nbsp; Intelligent Vending Platform</p>
 
-  <div class="divider"></div>
+  <div class="hero">
+    <div class="bg-letter">W</div>
+    <div class="hero-content">
+      <div class="accent-line"></div>
+      <div class="tagline">Not Another<br><span class="blue">Boring</span> Screen</div>
+      <div class="sub-line">SmartNode &nbsp;·&nbsp; Bengaluru, IN</div>
+    </div>
+  </div>
 
-  <nav class="nav">
-    <a class="nav-card" href="/player">
-      <div class="card-icon icon-player">📺</div>
-      <div class="card-label">Ad Player</div>
-      <div class="card-desc">Fullscreen display loop for the 32&Prime; kiosk</div>
-      <span class="card-arrow">↗</span>
+  <nav class="nav-grid">
+    <a class="nav-item" href="/player">
+      <div class="nav-label">Ad Player</div>
+      <div class="nav-desc">Fullscreen display loop — 32&Prime; kiosk</div>
+      <div class="nav-arrow">→</div>
     </a>
-    <a class="nav-card" href="/dashboard">
-      <div class="card-icon icon-dash">📡</div>
-      <div class="card-label">Live Dashboard</div>
-      <div class="card-desc">Real-time sensor data across all 14 nodes</div>
-      <span class="card-arrow">↗</span>
+    <a class="nav-item" href="/dashboard">
+      <div class="nav-label">Live Dashboard</div>
+      <div class="nav-desc">14 sensors · real-time WebSocket feed</div>
+      <div class="nav-arrow">→</div>
     </a>
-    <a class="nav-card" href="/api/sensors">
-      <div class="card-icon icon-api">{ }</div>
-      <div class="card-label">Sensor API</div>
-      <div class="card-desc">JSON feed for integration and logging</div>
-      <span class="card-arrow">↗</span>
+    <a class="nav-item" href="/api/sensors">
+      <div class="nav-label">Sensor API</div>
+      <div class="nav-desc">Raw JSON — all sensor states</div>
+      <div class="nav-arrow">→</div>
     </a>
   </nav>
 
-  <div class="status-row">
-    <span class="pulse"></span>
-    <span>System Online &nbsp;·&nbsp; Raspberry Pi 4 &nbsp;·&nbsp; Phase 1 Build</span>
-  </div>
 </div>
 </body>
 </html>
