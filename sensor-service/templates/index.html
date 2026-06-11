@@ -3,77 +3,240 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartNode Control</title>
+<title>SmartNode — Wendz LLP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
   :root {
-    --navy: #09111A;
-    --gold: #C49A4A;
-    --cream: #F0EAE0;
+    --bg: #050A10;
+    --surface: #0C1520;
+    --surface2: #111D2E;
+    --border: rgba(255,255,255,0.06);
+    --border-hover: rgba(196,154,74,0.4);
+    --gold: #C9A14C;
+    --gold-dim: rgba(201,161,76,0.12);
+    --text: #DDE6F0;
+    --muted: #4A6070;
+    --sub: #7A90A4;
+    --blue: #3B82F6;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: var(--navy);
-    color: var(--cream);
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* Radial spotlight */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    height: 60vh;
+    background: radial-gradient(ellipse at center, rgba(201,161,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Grid overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 40px 24px;
   }
-  .wrap { text-align: center; padding: 40px; }
-  h1 {
-    font-family: Georgia, 'EB Garamond', serif;
-    font-style: italic;
-    font-size: 2.5rem;
-    color: var(--gold);
+
+  /* Wordmark */
+  .wordmark {
+    display: flex;
+    align-items: center;
+    gap: 14px;
     margin-bottom: 8px;
-    letter-spacing: 1px;
   }
-  p.sub { color: #8a93a3; margin-bottom: 40px; font-size: 0.95rem; }
-  .links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-  a.card {
-    display: block;
-    padding: 28px 40px;
-    border: 1px solid rgba(196,154,74,0.3);
-    border-radius: 12px;
-    color: var(--cream);
+  .logo-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #C9A14C, #8B6B30);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 30px rgba(201,161,76,0.25);
+  }
+  .wordmark h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  .wordmark h1 span { color: var(--gold); }
+
+  .tagline {
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 56px;
+    font-weight: 500;
+  }
+
+  /* Divider line */
+  .divider {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    margin: 0 auto 56px;
+  }
+
+  /* Nav cards */
+  .nav {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 700px;
+  }
+
+  .nav-card {
+    position: relative;
+    flex: 1;
+    min-width: 190px;
+    max-width: 210px;
     text-decoration: none;
-    transition: all 0.2s ease;
-    min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    group: '';
   }
-  a.card:hover {
-    border-color: var(--gold);
-    background: rgba(196,154,74,0.08);
-    transform: translateY(-2px);
+
+  .nav-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(201,161,76,0.07), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
   }
-  a.card .icon { font-size: 2rem; margin-bottom: 10px; display: block; }
-  a.card .label { font-weight: 600; font-size: 1.1rem; }
-  a.card .desc { font-size: 0.85rem; color: #8a93a3; margin-top: 6px; }
-  .footer { margin-top: 50px; font-size: 0.8rem; color: #5a6373; }
+
+  .nav-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,161,76,0.12);
+  }
+  .nav-card:hover::before { opacity: 1; }
+
+  .card-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    margin-bottom: 18px;
+  }
+  .icon-player { background: rgba(59,130,246,0.12); }
+  .icon-dash   { background: rgba(201,161,76,0.12); }
+  .icon-api    { background: rgba(255,255,255,0.05); }
+
+  .card-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .card-desc {
+    font-size: 0.8rem;
+    color: var(--sub);
+    line-height: 1.5;
+  }
+
+  .card-arrow {
+    position: absolute;
+    top: 24px; right: 20px;
+    color: var(--muted);
+    font-size: 14px;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .nav-card:hover .card-arrow { color: var(--gold); transform: translate(2px, -2px); }
+
+  /* Status pill */
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 52px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .pulse {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #22C55E;
+    box-shadow: 0 0 8px #22C55E;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>SmartNode</h1>
-  <p class="sub">Wendz LLP — Smart Vending Node Control Panel</p>
-  <div class="links">
-    <a class="card" href="/player">
-      <span class="icon">📺</span>
-      <span class="label">Ad Player</span>
-      <span class="desc">Fullscreen display loop</span>
-    </a>
-    <a class="card" href="/dashboard">
-      <span class="icon">📊</span>
-      <span class="label">Sensor Dashboard</span>
-      <span class="desc">Live sensor readings</span>
-    </a>
-    <a class="card" href="/api/sensors">
-      <span class="icon">🔌</span>
-      <span class="label">API</span>
-      <span class="desc">Raw JSON feed</span>
-    </a>
+<div class="page">
+  <div class="wordmark">
+    <div class="logo-icon">⚡</div>
+    <h1>Smart<span>Node</span></h1>
   </div>
-  <div class="footer">Pi 4 · Flask · WebSocket — Phase 1 Build</div>
+  <p class="tagline">Wendz LLP &nbsp;·&nbsp; Intelligent Vending Platform</p>
+
+  <div class="divider"></div>
+
+  <nav class="nav">
+    <a class="nav-card" href="/player">
+      <div class="card-icon icon-player">📺</div>
+      <div class="card-label">Ad Player</div>
+      <div class="card-desc">Fullscreen display loop for the 32&Prime; kiosk</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a class="nav-card" href="/dashboard">
+      <div class="card-icon icon-dash">📡</div>
+      <div class="card-label">Live Dashboard</div>
+      <div class="card-desc">Real-time sensor data across all 14 nodes</div>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a class="nav-card" href="/api/sensors">
+      <div class="card-icon icon-api">{ }</div>
+      <div class="card-label">Sensor API</div>
+      <div class="card-desc">JSON feed for integration and logging</div>
+      <span class="card-arrow">↗</span>
+    </a>
+  </nav>
+
+  <div class="status-row">
+    <span class="pulse"></span>
+    <span>System Online &nbsp;·&nbsp; Raspberry Pi 4 &nbsp;·&nbsp; Phase 1 Build</span>
+  </div>
 </div>
 </body>
 </html>

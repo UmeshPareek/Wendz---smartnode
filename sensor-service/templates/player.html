@@ -3,49 +3,248 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartNode — Ad Player</title>
+<title>SmartNode — Display</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
   html, body {
     width: 100%; height: 100%;
     background: #000;
     overflow: hidden;
     cursor: none;
+    -webkit-font-smoothing: antialiased;
   }
+
+  /* ── SLIDES ── */
   .slide {
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    inset: 0;
     opacity: 0;
-    transition: opacity 1s ease-in-out;
+    transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
   }
   .slide.active { opacity: 1; z-index: 1; }
+
   .slide img, .slide video {
     width: 100%; height: 100%;
     object-fit: cover;
   }
-  /* Placeholder shown when /ad-player/ads is empty */
-  .placeholder {
-    width: 100%; height: 100%;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #09111A 0%, #1a2433 100%);
-    color: #C49A4A;
-    font-family: Georgia, serif;
-    text-align: center;
-    padding: 40px;
+
+  /* Ken Burns zoom on images */
+  .slide.active img {
+    animation: kenBurns 10s ease-in-out forwards;
   }
-  .placeholder h1 { font-size: 4vw; font-style: italic; margin-bottom: 1vw; }
-  .placeholder p { color: #8a93a3; font-family: sans-serif; font-size: 1.2vw; max-width: 600px; }
-  .badge {
-    position: fixed; bottom: 20px; right: 20px;
-    background: rgba(0,0,0,0.5); color: #C49A4A;
-    padding: 6px 14px; border-radius: 20px;
-    font-family: sans-serif; font-size: 0.8vw;
-    z-index: 10;
+  @keyframes kenBurns {
+    from { transform: scale(1.0); }
+    to   { transform: scale(1.06); }
+  }
+
+  /* ── PLACEHOLDER (no ads) ── */
+  .placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #050A10;
+    overflow: hidden;
+  }
+
+  .placeholder::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70vw;
+    height: 70vh;
+    background: radial-gradient(ellipse, rgba(201,161,76,0.07) 0%, transparent 65%);
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    50%     { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+  }
+
+  .placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  .placeholder-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 60px;
+  }
+
+  .ph-logo {
+    width: 72px; height: 72px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #C9A14C, #7D5C20);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 32px;
+    box-shadow: 0 0 60px rgba(201,161,76,0.3);
+  }
+
+  .ph-title {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #C9A14C;
+    margin-bottom: 12px;
+  }
+
+  .ph-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  .ph-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 40px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.06em;
+    font-family: 'Inter', sans-serif;
+  }
+  .ph-hint code {
+    font-family: monospace;
+    color: rgba(201,161,76,0.7);
+    background: rgba(201,161,76,0.06);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+
+  /* ── HUD OVERLAY ── */
+  .hud {
+    position: fixed;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* Top-left: branding */
+  .hud-brand {
+    top: 0; left: 0;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(to right, rgba(0,0,0,0.55), transparent);
+    padding-right: 80px;
+  }
+  .hud-logo {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #C9A14C, #7D5C20);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .hud-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  .hud-name span { color: rgba(201,161,76,0.8); }
+
+  /* Bottom-right: clock + status */
+  .hud-status {
+    bottom: 0; right: 0;
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(to left, rgba(0,0,0,0.55), transparent);
+    padding-left: 80px;
+  }
+
+  .live-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(34,197,94,0.25);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(34,197,94,0.7);
+    font-family: 'Inter', sans-serif;
+  }
+  .live-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #22C55E;
+    box-shadow: 0 0 6px #22C55E;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%,100%{ opacity:1; } 50%{ opacity:0.3; }
+  }
+
+  .clock {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #C9A14C, rgba(201,161,76,0.3));
+    z-index: 101;
+    width: 0%;
+    transition: width linear;
+  }
+
+  /* Slide counter dots */
+  .slide-dots {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 101;
+    display: flex;
+    gap: 6px;
+    pointer-events: none;
+  }
+  .sdot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: all 0.3s;
+  }
+  .sdot.active {
+    background: rgba(201,161,76,0.8);
+    width: 20px;
+    border-radius: 2px;
   }
 </style>
 </head>
@@ -53,49 +252,87 @@
 
 {% if ads|length == 0 %}
   <div class="placeholder">
-    <h1>WENDZ SmartNode</h1>
-    <p>No ad content found. Drop images/videos into <code>ad-player/ads/</code> on the Pi
-       (jpg, png, gif, mp4, webm supported) and refresh this page.</p>
+    <div class="placeholder-inner">
+      <div class="ph-logo">⚡</div>
+      <div class="ph-title">WENDZ</div>
+      <div class="ph-sub">SmartNode · Display Ready</div>
+      <div class="ph-hint">
+        Drop files into <code>ad-player/ads/</code> to begin
+      </div>
+    </div>
   </div>
 {% else %}
   {% for ad in ads %}
-    <div class="slide {{ 'active' if loop.first }}" data-index="{{ loop.index0 }}">
-      {% if ad.endswith('.mp4') or ad.endswith('.webm') %}
-        <video src="/ads/{{ ad }}" autoplay muted loop></video>
-      {% else %}
-        <img src="/ads/{{ ad }}" alt="">
-      {% endif %}
-    </div>
+  <div class="slide {{ 'active' if loop.first }}" id="slide-{{ loop.index0 }}">
+    {% if ad.lower().endswith(('.mp4', '.webm')) %}
+      <video src="/ads/{{ ad }}" autoplay muted playsinline></video>
+    {% else %}
+      <img src="/ads/{{ ad }}" alt="" draggable="false">
+    {% endif %}
+  </div>
   {% endfor %}
+
+  <!-- Slide indicator dots -->
+  {% if ads|length > 1 %}
+  <div class="slide-dots" id="dots">
+    {% for ad in ads %}
+    <div class="sdot {{ 'active' if loop.first }}" id="dot-{{ loop.index0 }}"></div>
+    {% endfor %}
+  </div>
+  {% endif %}
 {% endif %}
 
-<div class="badge" id="clock"></div>
+<!-- HUD overlays -->
+<div class="hud hud-brand">
+  <div class="hud-logo">⚡</div>
+  <div class="hud-name">WENDZ <span>SmartNode</span></div>
+</div>
+
+<div class="hud hud-status">
+  <div class="live-pill"><span class="live-dot"></span> Live</div>
+  <div class="clock" id="clock">--:--</div>
+</div>
+
+<div class="progress-bar" id="progress"></div>
 
 <script>
-  // Slideshow logic
+  const SLIDE_MS = 8000;
   const slides = document.querySelectorAll('.slide');
   let current = 0;
 
-  function showNext() {
+  function goTo(idx) {
     if (slides.length < 2) return;
-    slides[current].classList.remove('active');
-    current = (current + 1) % slides.length;
+    const prev = current;
+    current = idx % slides.length;
+    slides[prev].classList.remove('active');
     slides[current].classList.add('active');
+
+    // Update dots
+    document.querySelectorAll('.sdot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+
+    // Progress bar
+    const bar = document.getElementById('progress');
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    requestAnimationFrame(() => {
+      bar.style.transition = `width ${SLIDE_MS}ms linear`;
+      bar.style.width = '100%';
+    });
   }
 
-  // Each slide shows for 8 seconds (adjust as needed)
   if (slides.length > 1) {
-    setInterval(showNext, 8000);
+    goTo(0);
+    setInterval(() => goTo(current + 1), SLIDE_MS);
   }
 
-  // Live clock badge (also useful as an "is this thing alive" indicator)
+  // Clock
   function tick() {
-    const now = new Date();
     document.getElementById('clock').textContent =
-      now.toLocaleTimeString() + ' · SmartNode Live';
+      new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   }
-  setInterval(tick, 1000);
-  tick();
+  setInterval(tick, 1000); tick();
 </script>
 
 </body>
